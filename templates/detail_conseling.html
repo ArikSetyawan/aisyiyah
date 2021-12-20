@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+  <title>Detail Conseling &mdash; Aisyiyah</title>
+
+  <!-- General CSS Files -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+  <!-- CSS Libraries -->
+  <link rel="stylesheet" href="{{url_for('static',filename='modules/bootstrap-social/bootstrap-social.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='modules/summernote/summernote-bs4.css')}}">
+
+  <!-- Template CSS -->
+  <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='css/components.css')}}">
+</head>
+
+<body>
+  <div id="app">
+    <div class="main-wrapper">
+      <div class="navbar-bg"></div>
+      <nav class="navbar navbar-expand-lg main-navbar">
+        <form class="form-inline mr-auto">
+          <ul class="navbar-nav mr-3">
+            <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
+          </ul>
+        </form>
+        <ul class="navbar-nav navbar-right">
+          <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+            {% if session['level'] == 1 %}
+            <img alt="image" src="{{url_for('static',filename='img/avatar/avatar-1.png')}}" class="rounded-circle mr-1">
+            {% else %}
+            <img alt="image" src="/static/image/{{session['photo']}}" class="rounded-circle mr-1">
+            {% endif %}
+            <div class="d-sm-none d-lg-inline-block">Hi, {{session['user']}}</div></a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a href="/profile" class="dropdown-item has-icon">
+                <i class="far fa-user"></i> Profile
+              </a>
+              <a href="/logout" class="dropdown-item has-icon text-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+      <div class="main-sidebar">
+        <aside id="sidebar-wrapper">
+          <div class="sidebar-brand">
+            <a href="/">Aisyiyah</a>
+          </div>
+          <div class="sidebar-brand sidebar-brand-sm">
+            <a href="/">Ai</a>
+          </div>
+          <ul class="sidebar-menu">
+              <li class="menu-header">Menu  </li>
+              <li><a class="nav-link" href="/dashboard"><i class="fas fa-fire"></i> <span>Dashboard</span></a></li>
+              {% if session['level'] == 1 %}
+              <li><a class="nav-link" href="/users"><i class="fas fa-user"></i> <span>Users</span></a></li>
+              {% endif %}
+              <li class="active"><a class="nav-link" href="/conseling"><i class="fas fa-comment-dots"></i> <span>Conseling</span></a></li>
+            </ul>
+        </aside>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+          <div class="section-header">
+            <h1>Detail Conseling</h1>
+          </div>
+          <div class="section-body">
+
+            <div class="row mt-sm-4">
+              <div class="col-12 col-md-12 col-lg-12">
+                <div class="card profile-widget">
+                  <div class="profile-widget-header">
+                    <img alt="image" src="../static/image/{{data_student.photo}}" class="rounded-circle profile-widget-picture">
+                    <div class="profile-widget-items">
+                      <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Name</div>
+                        <div class="profile-widget-item-value">{{data_student.nama}}</div>
+                      </div>
+                      <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Ask Time</div>
+                        <div class="profile-widget-item-value">{{data_conseling.dateask_print}}</div>
+                      </div>
+                    </div>
+                    <div class="profile-widget-description">
+                      <br>
+                      <h3>{{data_conseling.title}}</h3>
+                      {{data_conseling.question|safe}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {% if data_conseling.answered == True %}
+            <div class="row mt-sm-4">
+              <div class="col-12 col-md-12 col-lg-12">
+                <div class="card profile-widget">
+                  <div class="profile-widget-header">
+                    <img alt="image" src="../static/image/{{data_teacher.photo}}" class="rounded-circle profile-widget-picture">
+                    <div class="profile-widget-items">
+                      <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Name</div>
+                        <div class="profile-widget-item-value">{{data_teacher.nama}}</div>
+                      </div>
+                      <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Answer Time</div>
+                        <div class="profile-widget-item-value">{{data_conseling.dateans_print}}</div>
+                      </div>
+                      {% if session['id_user']|string|int == data_conseling.user_answer|string|int %}
+                      <div class="profile-widget-item">
+                        <div class="profile-widget-item-label">Option</div>
+                        <div class="profile-widget-item-value"><a href="#" class="btn btn-warning" data-toggle="modal" data-target="#editanswer">Edit</a></div>
+                      </div>
+                      {% endif %}
+                    </div>
+                    <div class="profile-widget-description">
+                      <br>
+                      <h3>Answer</h3>
+                      {{data_conseling.answer|safe}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+            {% if session['level'] == 2 %}
+            {% if data_conseling.answered == False %}
+            <div class="row mt-sm-4">
+              <div class="col-12 col-md-12 col-lg-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h3>Answer Question from {{data_student.nama}}</h3> 
+                  </div>
+                  <div class="card-body">
+                    <form method="post" action="/answer-conseling/{{data_conseling.id}}" class="needs-validation" novalidate=""> 
+                      <div class="form-group">
+                        <label>Answer</label>
+                        <textarea id="summernote" class="form-control summernote" name="answer" required autofocus></textarea>
+                        <div class="invalid-feedback">
+                          Please fill in your answer
+                        </div>
+                      </div>
+                      <div class="card-footer text-right">
+                        <button class="btn btn-primary">Save Changes</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
+
+          </div>
+        </section>
+      </div>
+      <footer class="main-footer">
+        <div class="footer-left">
+          Copyright &copy; 2021 <div class="bullet"></div> Design By <a href="#">TK & KB Aisyiyah 3 Rewwin</a>
+        </div>
+        <div class="footer-right">
+          1.0
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  {% if session['level'] == 2 %}
+  {% if data_conseling.answered == True %}
+  <div class="modal fade" tabindex="-1" role="dialog" id="editanswer">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Answer</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="post" action="/edit-answer-conseling/{{data_conseling.id}}" class="needs-validation" novalidate="">
+            <div class="form-group">
+              <label>Answer</label>
+              <textarea id="summernote" class="form-control summernote" name="answer" required autofocus>{{data_conseling.answer}}</textarea>
+              <div class="invalid-feedback">
+                Please fill in your answer
+              </div>
+            </div>
+            <div class="text-right">
+              <button class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  <!-- General JS Scripts -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script src="{{url_for('static',filename='js/stisla.js')}}"></script>
+
+  <!-- JS Libraies -->
+  <script src="{{url_for('static',filename='modules/summernote/summernote-bs4.js')}}"></script>
+
+  <!-- Template JS File -->
+  <script src="{{url_for('static',filename='js/scripts.js')}}"></script>
+  <script src="{{url_for('static',filename='js/custom.js')}}"></script>
+
+  <!-- Page Specific JS File -->
+</body>
+</html>

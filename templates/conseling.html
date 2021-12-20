@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+  <title>Conseling &mdash; Aisyiyah</title>
+
+  <!-- General CSS Files -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+  <!-- CSS Libraries -->
+  <link rel="stylesheet" href="{{url_for('static',filename='modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='modules/datatables.net-select-bs4/css/select.bootstrap4.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='modules/bootstrap-social/bootstrap-social.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='modules/summernote/summernote-bs4.css')}}">
+
+  <!-- Template CSS -->
+  <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='css/components.css')}}">
+</head>
+
+<body>
+  <div id="app">
+    <div class="main-wrapper">
+      <div class="navbar-bg"></div>
+      <nav class="navbar navbar-expand-lg main-navbar">
+        <form class="form-inline mr-auto">
+          <ul class="navbar-nav mr-3">
+            <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
+          </ul>
+        </form>
+        <ul class="navbar-nav navbar-right">
+          <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+            {% if session['level'] == 1 %}
+            <img alt="image" src="{{url_for('static',filename='img/avatar/avatar-1.png')}}" class="rounded-circle mr-1">
+            {% else %}
+            <img alt="image" src="/static/image/{{session['photo']}}" class="rounded-circle mr-1">
+            {% endif %}
+            <div class="d-sm-none d-lg-inline-block">Hi, {{session['user']}}</div></a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a href="/profile" class="dropdown-item has-icon">
+                <i class="far fa-user"></i> Profile
+              </a>
+              <a href="/logout" class="dropdown-item has-icon text-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+      <div class="main-sidebar">
+        <aside id="sidebar-wrapper">
+          <div class="sidebar-brand">
+            <a href="/">Aisyiyah</a>
+          </div>
+          <div class="sidebar-brand sidebar-brand-sm">
+            <a href="/">Ai</a>
+          </div>
+          <ul class="sidebar-menu">
+              <li class="menu-header">Menu  </li>
+              <li><a class="nav-link" href="/dashboard"><i class="fas fa-fire"></i> <span>Dashboard</span></a></li>
+              {% if session['level'] == 1 %}
+              <li><a class="nav-link" href="/users"><i class="fas fa-user"></i> <span>Users</span></a></li>
+              {% endif %}
+              <li class="active"><a class="nav-link" href="/conseling"><i class="fas fa-comment-dots"></i> <span>Conseling</span></a></li>
+            </ul>
+        </aside>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+          <div class="section-header">
+            <h1>Conseling</h1>
+          </div>
+
+          <div class="section-body">
+            <div class="row">
+              <div class="col-12 mb-4">
+                <div class="hero bg-primary text-white">
+                  <div class="hero-inner">
+                    <h2>Halo, {{session['user']}}!</h2>
+                    <p class="lead">{% if session['level'] == 3 %}Selamat datang di layanan bimbingan konseling online TK & KB Aisyiyah 3 Rewwin. Punya kendala atau pertanyaan mengenai anak anda? tanyakan ke kami. Konselor kami akan segera menjawab pertanyaan anda.{% else %}Selamat datang di layanan bimbingan konseling online TK & KB Aisyiyah 3 Rewwin. Jawab segera pertanyaan yang ditanyakan oleh para wali murid.. Dengan menjawab pertanyaan yang mereka ajukan, anda sudah berkontribusi dalam membantu tumbuh kembang peserta didik.{% endif %}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {% if session['level'] == 1 %}
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>All Question</h4>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped" id="all_question_table">
+                      <thead>
+                        <tr>
+                          <th class="text-center">#</th>
+                          <th>User Ask</th>
+                          <th>Title</th>
+                          <th>Question</th>
+                          <th>Date Asking</th>
+                          <th>Answered</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for i in conseling %}
+                        <tr>
+                          <td class="text-center">{{loop.index}}</td>
+                          <td>{% for j in data_student %}{% if i.user_ask == j.id_user %}{{j.nama}}{%endif%}{%endfor%}</td>
+                          <td>{{i.title}}</td>
+                          <td><a href="#" data-toggle="modal" data-target="#question{{loop.index}}">details...</a></td>
+                          <td>{{i.dateask_print}}</td>
+                          <td>{% if i.answered == True %}Terjawab{% else %}Belum Terjawab{% endif %}</td>
+                          <td><a href="/conseling/{{i.id}}" class="btn btn-primary">Detail</a> <a href="/delete-conseling/{{i.id}}" class="btn btn-danger">Delete</a></td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% elif session['level'] == 2 %}
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Unanswered Question</h4>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped" id="unanswered_question_table">
+                      <thead>
+                        <tr>
+                          <th class="text-center">#</th>
+                          <th>User Ask</th>
+                          <th>Title</th>
+                          <th>Question</th>
+                          <th>Date Asking</th>
+                          <th>Answered</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for i in unanswered_question %}
+                        <tr>
+                          <td class="text-center">{{loop.index}}</td>
+                          <td>{% for j in data_student %}{% if i.user_ask == j.id_user %}{{j.nama}}{%endif%}{%endfor%}</td>
+                          <td>{{i.title}}</td>
+                          <td><a href="#" data-toggle="modal" data-target="#unanswered_question{{loop.index}}">details...</a></td>
+                          <td>{{i.dateask_print}}</td>
+                          <td>{% if i.answered == True %}Terjawab{% else %}Belum Terjawab{% endif %}</td>
+                          <td><a href="/conseling/{{i.id}}" class="btn btn-primary">Detail</a></td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Question you answer</h4>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped" id="question_you_answer_table">
+                      <thead>
+                        <tr>
+                          <th class="text-center">#</th>
+                          <th>User Ask</th>
+                          <th>Title</th>
+                          <th>Question</th>
+                          <th>Date Asking</th>
+                          <th>Answered</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for i in question_you_answer %}
+                        <tr>
+                          <td class="text-center">{{loop.index}}</td>
+                          <td>{% for j in data_student %}{% if i.user_ask == j.id_user %}{{j.nama}}{%endif%}{%endfor%}</td>
+                          <td>{{i.title}}</td>
+                          <td><a href="#" data-toggle="modal" data-target="#question_you_answer{{loop.index}}">details...</a></td>
+                          <td>{{i.dateask_print}}</td>
+                          <td>{% if i.answered == True %}Terjawab{% else %}Belum Terjawab{% endif %}</td>
+                          <td><a href="/conseling/{{i.id}}" class="btn btn-primary">Detail</a></td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>     
+            {% else %}
+              <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Your question <span data-toggle="modal" data-target="#addquestion"><a href="#" data-toggle="tooltip" data-placement="top" class="btn btn-success btn-sm" title="Tanyakan Sesuatu">+</a></span></h4>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped" id="your_question_table">
+                      <thead>
+                        <tr>
+                          <th class="text-center">#</th>
+                          <th>User Ask</th>
+                          <th>Title</th>
+                          <th>Question</th>
+                          <th>Date Asking</th>
+                          <th>Answered</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for i in your_question %}
+                        <tr>
+                          <td class="text-center">{{loop.index}}</td>
+                          <td>{% for j in data_student %}{% if i.user_ask == j.id_user %}{{j.nama}}{%endif%}{%endfor%}</td>
+                          <td>{{i.title}}</td>
+                          <td><a href="#" data-toggle="modal" data-target="#your_question{{loop.index}}">details...</a></td>
+                          <td>{{i.dateask_print}}</td>
+                          <td>{% if i.answered == True %}Terjawab{% else %}Belum Terjawab{% endif %}</td>
+                          <td><a href="/conseling/{{i.id}}" class="btn btn-primary">Detail</a></td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </section>
+      </div>
+      <footer class="main-footer">
+        <div class="footer-left">
+          Copyright &copy; 2021 <div class="bullet"></div> Design By <a href="#">TK & KB Aisyiyah 3 Rewwin</a>
+        </div>
+        <div class="footer-right">
+          1.0
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  {% if session['level'] == 1 %}
+  {% for i in conseling %}
+  <div class="modal fade" tabindex="-1" role="dialog" id="question{{loop.index}}">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{i.title}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{i.question|safe}}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% elif session['level'] == 2 %}
+  {% for i in unanswered_question %}
+  <div class="modal fade" tabindex="-1" role="dialog" id="unanswered_question{{loop.index}}">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{i.title}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{i.question|safe}}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% for i in question_you_answer %}
+  <div class="modal fade" tabindex="-1" role="dialog" id="question_you_answer{{loop.index}}">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{i.title}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{i.question|safe}}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  {% for i in your_question %}
+  <div class="modal fade" tabindex="-1" role="dialog" id="your_question{{loop.index}}">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{i.title}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{i.question|safe}}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {% if session['level'] == 3 %}
+  <div class="modal fade" tabindex="-1" role="dialog" id="addquestion">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Ask Something to Our Counselor</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="post" action="/create-conseling" class="needs-validation" novalidate="">
+            <div class="form-group">
+              <label for="title">Judul</label>
+              <input id="title" type="text" value="" placeholder="Solusi untuk anak yang tidak mau mengerjakan pr" class="form-control" name="title" tabindex="1" required autofocus>
+              <div class="invalid-feedback">
+                Please fill in your title
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Pertanyaan</label>
+              <textarea id="summernote" class="form-control summernote-simple" name="question" required autofocus></textarea>
+              <div class="invalid-feedback">
+                Please fill in your question
+              </div>
+            </div>
+            <div class="text-right">
+              <button class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- General JS Scripts -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script src="{{url_for('static',filename='js/stisla.js')}}"></script>
+
+  <!-- JS Libraies -->
+  <script src="{{url_for('static',filename='modules/datatables/media/js/jquery.dataTables.min.js')}}"></script>
+  <script src="{{url_for('static',filename='modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
+  <script src="{{url_for('static',filename='modules/datatables.net-select-bs4/js/select.bootstrap4.min.js')}}"></script>
+  <script src="{{url_for('static',filename='modules/summernote/summernote-bs4.js')}}"></script>
+
+
+  <!-- Template JS File -->
+  <script src="{{url_for('static',filename='js/scripts.js')}}"></script>
+  <script src="{{url_for('static',filename='js/custom.js')}}"></script>
+
+  <!-- Page Specific JS File -->
+  <script type="text/javascript">
+    $(".table").dataTable({
+      "columnDefs": [
+        { "sortable": false, "targets": [3,6] }
+      ]
+    });
+  </script>
+  <script type="text/javascript">
+    $('#summernote').summernote({
+      placeholder: 'Dear para guru. Saya ingin bertanya bagaimana cara yang halus untuk menyuruh anak supaya mengerjakan pr yang telah para guru sekalian berikan? Terimakasih'
+    });
+  </script>
+</body>
+</html>

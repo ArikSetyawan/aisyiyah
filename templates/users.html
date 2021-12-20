@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+  <title>Users &mdash; Aisyiyah</title>
+
+  <!-- General CSS Files -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+  <!-- CSS Libraries -->
+  <link rel="stylesheet" href="{{url_for('static',filename='modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='modules/datatables.net-select-bs4/css/select.bootstrap4.min.css')}}">
+
+  <!-- Template CSS -->
+  <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='css/components.css')}}">
+</head>
+
+<body>
+  <div id="app">
+    <div class="main-wrapper">
+      <div class="navbar-bg"></div>
+      <nav class="navbar navbar-expand-lg main-navbar">
+        <form class="form-inline mr-auto">
+          <ul class="navbar-nav mr-3">
+            <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
+          </ul>
+        </form>
+        <ul class="navbar-nav navbar-right">
+          <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+            <img alt="image" src="{{url_for('static',filename='img/avatar/avatar-1.png')}}" class="rounded-circle mr-1">
+            <div class="d-sm-none d-lg-inline-block">Hi, {{session['user']}}</div></a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a href="/profile" class="dropdown-item has-icon">
+                <i class="far fa-user"></i> Profile
+              </a>
+              <a href="/logout" class="dropdown-item has-icon text-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+      <div class="main-sidebar">
+        <aside id="sidebar-wrapper">
+          <div class="sidebar-brand">
+            <a href="/">Aisyiyah</a>
+          </div>
+          <div class="sidebar-brand sidebar-brand-sm">
+            <a href="/">Ai</a>
+          </div>
+          <ul class="sidebar-menu">
+              <li class="menu-header">Menu  </li>
+              <li><a class="nav-link" href="/dashboard"><i class="fas fa-fire"></i> <span>Dashboard</span></a></li>
+              {% if session['level'] == 1 %}
+              <li class="active"><a class="nav-link" href="/users"><i class="fas fa-user"></i> <span>Users</span></a></li>
+              {% endif %}
+              <li><a class="nav-link" href="/conseling"><i class="fas fa-comment-dots"></i> <span>Conseling</span></a></li>
+            </ul>
+        </aside>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+          <div class="section-header">
+            <h1>Data Users</h1>
+          </div>
+
+          <div class="section-body">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Students <a href="#" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addstudent">+</a></h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-striped" id="table-1">
+                        <thead>
+                          <tr>
+                            <th class="text-center">#</th>
+                            <th>Photo</th>
+                            <th>Nama</th>
+                            <th>Jenis Kelamin</th>
+                            <th>Email</th>
+                            <th>Password</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in student %}
+                          <tr>
+                            <td class="text-center">{{loop.index}}</td>
+                            <td>
+                              <img alt="image" src="/static/image/{{i.photo}}" class="rounded-circle" width="35">
+                            </td>
+                            <td>{{i.nama}}</td>
+                            <td>{{i.kelamin}}</td>
+                            <td>{{i.id_user.email}}</td>
+                            <td>{{i.id_user.password}}</td>
+                            <td><a href="#" class="btn btn-warning" data-toggle="modal" data-target="#editstudent{{loop.index}}">Edit</a> <a href="/delete-user/{{i.id_user}}" class="btn btn-danger">Delete</a></td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Teachers <a href="#" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addteacher">+</a></h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-striped" id="table-2">
+                        <thead>
+                          <tr>
+                            <th class="text-center">#</th>
+                            <th>Photo</th>
+                            <th>Nama</th>
+                            <th>Jenis Kelamin</th>
+                            <th>Email</th>
+                            <th>Password</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in teacher %}
+                          <tr>
+                            <td class="text-center">{{loop.index}}</td>
+                            <td>
+                              <img alt="image" src="/static/image/{{i.photo}}" class="rounded-circle" width="35">
+                            </td>
+                            <td>{{i.nama}}</td>
+                            <td>{{i.kelamin}}</td>
+                            <td>{{i.id_user.email}}</td>
+                            <td>{{i.id_user.password}}</td>
+                            <td><a href="#" class="btn btn-warning" data-toggle="modal" data-target="#editteacher{{loop.index}}">Edit</a> <a href="/delete-user/{{i.id_user}}" class="btn btn-danger">Delete</a></td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <footer class="main-footer">
+        <div class="footer-left">
+          Copyright &copy; 2021 <div class="bullet"></div> Design By <a href="#">TK & KB Aisyiyah 3 Rewwin</a>
+        </div>
+        <div class="footer-right">
+          1.0
+        </div>
+      </footer>
+    </div>
+  </div>
+
+
+<!-- Modal -->
+  <div class="modal fade" tabindex="-1" role="dialog" id="addteacher">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Teacher</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="/addteacher" class="needs-validation" novalidate="">
+            <div class="form-group">
+              <label for="nama">Nama</label>
+              <input id="nama" type="text" class="form-control" name="nama" tabindex="1" required autofocus>
+              <div class="invalid-feedback">
+                Please fill in your name
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="jk">Jenis Kelamin</label>
+              <select id="jk" class="form-control" tabindex="1" name="jk" required autofocus>
+                <option value="Laki-Laki">Laki-Laki</option>
+                <option value="Perempuan">Perempuan</option>
+              </select>
+              <!-- <input id="jk" type="email" class="form-control" name="email" tabindex="1" required autofocus> -->
+              <div class="invalid-feedback">
+                Please fill in your email
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input id="email" type="email" class="form-control" name="email" tabindex="1" required autofocus>
+              <div class="invalid-feedback">
+                Please fill in your email
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="d-block">
+                <label for="password" class="control-label">Password</label>
+              </div>
+              <input id="password" type="password" class="form-control" name="password" tabindex="2" required>
+              <div class="invalid-feedback">
+                please fill in your password
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" tabindex="-1" role="dialog" id="addstudent">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Student</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="/addstudent" class="needs-validation" novalidate="">
+            <div class="form-group">
+              <label for="nama">Nama</label>
+              <input id="nama" type="text" class="form-control" name="nama" tabindex="1" required autofocus>
+              <div class="invalid-feedback">
+                Please fill in your name
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="jk">Jenis Kelamin</label>
+              <select id="jk" class="form-control" tabindex="1" name="jk" required autofocus>
+                <option value="Laki-Laki">Laki-Laki</option>
+                <option value="Perempuan">Perempuan</option>
+              </select>
+              <!-- <input id="jk" type="email" class="form-control" name="email" tabindex="1" required autofocus> -->
+              <div class="invalid-feedback">
+                Please fill in your email
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input id="email" type="email" class="form-control" name="email" tabindex="1" required autofocus>
+              <div class="invalid-feedback">
+                Please fill in your email
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="d-block">
+                <label for="password" class="control-label">Password</label>
+              </div>
+              <input id="password" type="password" class="form-control" name="password" tabindex="2" required>
+              <div class="invalid-feedback">
+                please fill in your password
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% for i in teacher %}
+  <div class="modal fade" tabindex="-1" role="dialog" id="editteacher{{loop.index}}">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Teacher {{i.nama}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="/edit-teacher/{{i.id_user}}" class="needs-validation" novalidate="">
+            <div class="form-group">
+              <label for="nama">Nama</label>
+              <input id="nama" type="text" value="{{i.nama}}" class="form-control" name="nama" tabindex="1" required autofocus>
+              <div class="invalid-feedback">
+                Please fill in your name
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="jk">Jenis Kelamin</label>
+              <select id="jk" class="form-control" tabindex="1" name="jk" required autofocus>
+                <option value="Laki-Laki">Laki-Laki</option>
+                <option value="Perempuan">Perempuan</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input id="email" value="{{i.id_user.email}}" type="email" class="form-control" name="email" tabindex="1" required autofocus>
+              <div class="invalid-feedback">
+                Please fill in your email
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="d-block">
+                <label for="password" class="control-label">Password</label>
+              </div>
+              <input id="password" value="{{i.id_user.password}}" type="text" class="form-control" name="password" tabindex="2" required>
+              <div class="invalid-feedback">
+                please fill in your password
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  {% for i in student %}
+  <div class="modal fade" tabindex="-1" role="dialog" id="editstudent{{loop.index}}">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Student {{i.nama}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="/edit-student/{{i.id_user}}" class="needs-validation" novalidate="">
+            <div class="form-group">
+              <label for="nama">Nama</label>
+              <input id="nama" type="text" value="{{i.nama}}" class="form-control" name="nama" tabindex="1" required autofocus>
+              <div class="invalid-feedback">
+                Please fill in your name
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="jk">Jenis Kelamin</label>
+              <select id="jk" class="form-control" tabindex="1" name="jk" required autofocus>
+                <option value="Laki-Laki">Laki-Laki</option>
+                <option value="Perempuan">Perempuan</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input id="email" value="{{i.id_user.email}}" type="email" class="form-control" name="email" tabindex="1" required autofocus>
+              <div class="invalid-feedback">
+                Please fill in your email
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="d-block">
+                <label for="password" class="control-label">Password</label>
+              </div>
+              <input id="password" value="{{i.id_user.password}}" type="text" class="form-control" name="password" tabindex="2" required>
+              <div class="invalid-feedback">
+                please fill in your password
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+<!-- General JS Scripts -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script src="{{url_for('static',filename='js/stisla.js')}}"></script>
+
+  <!-- JS Libraies -->
+  <script src="{{url_for('static',filename='modules/datatables/media/js/jquery.dataTables.min.js')}}"></script>
+  <script src="{{url_for('static',filename='modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
+  <script src="{{url_for('static',filename='modules/datatables.net-select-bs4/js/select.bootstrap4.min.js')}}"></script>
+
+  <!-- Template JS File -->
+  <script src="{{url_for('static',filename='js/scripts.js')}}"></script>
+  <script src="{{url_for('static',filename='js/custom.js')}}"></script>
+
+  <!-- Page Specific JS File -->
+  <script type="text/javascript">
+    $(".table").dataTable({
+      "columnDefs": [
+        { "sortable": false, "targets": [1,6] }
+      ]
+    });
+  </script>
+</body>
+</html>
