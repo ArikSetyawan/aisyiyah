@@ -97,7 +97,8 @@ def upload_image(file,id_user,level):
 
 @app.route('/')
 def index():
-	return render_template('index.html')
+	data_teacher = teacher.select()
+	return render_template('index.html',data_teacher=data_teacher)
 
 @app.route('/dashboard')
 def dashboard():
@@ -303,8 +304,9 @@ def deleteuser(id_user):
 				if get_user.level == 2:
 					# get_teacher
 					get_teacher = teacher.get(teacher.id_user == id_user)
-					# remove photo
-					os.remove(os.path.join(app.config['folderimage'],get_teacher.photo))
+					if get_teacher.photo != 'default.png':
+						# remove photo
+						os.remove(os.path.join(app.config['folderimage'],get_teacher.photo))
 					# delete teacher
 					delete_teacher = teacher.delete().where(teacher.id_user == id_user)
 					delete_teacher.execute()
@@ -318,8 +320,9 @@ def deleteuser(id_user):
 				elif get_user.level == 3:
 					# get_student
 					get_student = student.get(student.id_user == id_user)
-					# remove photo
-					os.remove(os.path.join(app.config['folderimage'],get_student.photo))
+					if get_student.photo != 'default.png':
+						# remove photo
+						os.remove(os.path.join(app.config['folderimage'],get_student.photo))
 					# delete student
 					delete_student = student.delete().where(student.id_user == id_user)
 					delete_student.execute()
