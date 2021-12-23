@@ -72,13 +72,13 @@ def upload_image(file,id_user,level):
 			update_teacher = teacher.update(photo=filename).where(teacher.id_user == id_user)
 			update_teacher.execute()
 			file.save(os.path.join(app.config['folderimage'],filename))
-			return 'success'
+			return filename
 		else:
 			os.remove(os.path.join(app.config['folderimage'],get_teacher.photo))
 			update_teacher = teacher.update(photo=filename).where(teacher.id_user == id_user)
 			update_teacher.execute()
 			file.save(os.path.join(app.config['folderimage'],filename))
-			return 'success'
+			return filename
 	else:
 		# get_student
 		get_student = student.get(student.id_user == id_user)
@@ -86,13 +86,13 @@ def upload_image(file,id_user,level):
 			update_student = student.update(photo=filename).where(student.id_user == id_user)
 			update_student.execute()
 			file.save(os.path.join(app.config['folderimage'],filename))
-			return 'success'
+			return filename
 		else:
 			os.remove(os.path.join(app.config['folderimage'],get_student.photo))
 			update_student = student.update(photo=filename).where(student.id_user == id_user)
 			update_student.execute()
 			file.save(os.path.join(app.config['folderimage'],filename))
-			return 'success'
+			return filename
 	
 
 @app.route('/')
@@ -389,7 +389,8 @@ def edit_profile(id_user):
 							update_teacher = teacher.update(nama=nama,kelamin=kelamin).where(teacher.id_user == id_user)
 							update_user.execute()
 							update_teacher.execute()
-							upload_image(file,cek_user.id,cek_user.level)
+							set_image = upload_image(file,cek_user.id,cek_user.level)
+							session['photo'] = set_image
 							return redirect(url_for('profile'))
 						else:
 							return redirect(url_for('profile'))
@@ -398,7 +399,8 @@ def edit_profile(id_user):
 						update_teacher = teacher.update(nama=nama,kelamin=kelamin).where(teacher.id_user == id_user)
 						update_user.execute()
 						update_teacher.execute()
-						upload_image(file,cek_user.id,cek_user.level)
+						set_image = upload_image(file,cek_user.id,cek_user.level)
+						session['photo'] = set_image
 						return redirect(url_for('profile'))
 				elif cek_user.level == 3:
 					if cek_email.exists():
@@ -408,7 +410,8 @@ def edit_profile(id_user):
 							update_student = student.update(nama=nama,kelamin=kelamin).where(student.id_user == id_user)
 							update_user.execute()
 							update_student.execute()
-							upload_image(file,cek_user.id,cek_user.level)
+							set_image = upload_image(file,cek_user.id,cek_user.level)
+							session['photo'] = set_image
 							return redirect(url_for('profile'))
 						else:
 							return redirect(url_for('profile'))
@@ -417,7 +420,8 @@ def edit_profile(id_user):
 						update_student = student.update(nama=nama,kelamin=kelamin).where(student.id_user == id_user)
 						update_user.execute()
 						update_student.execute()
-						upload_image(file,cek_user.id,cek_user.level)
+						set_image = upload_image(file,cek_user.id,cek_user.level)
+						session['photo'] = set_image
 						return redirect(url_for('profile'))
 				else:
 					return redirect(url_for('dashboard'))
