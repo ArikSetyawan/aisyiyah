@@ -91,7 +91,7 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <h4>All Question</h4>
+                  <h4>All Question</h4> <a href="/delete-all-conseling/" class="btn btn-danger">Delete all</a>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
@@ -257,7 +257,7 @@
   {% if session['level'] == 1 %}
   {% for i in conseling %}
   <div class="modal fade" tabindex="-1" role="dialog" id="question{{loop.index}}">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{i.title}}</h5>
@@ -275,7 +275,7 @@
   {% elif session['level'] == 2 %}
   {% for i in unanswered_question %}
   <div class="modal fade" tabindex="-1" role="dialog" id="unanswered_question{{loop.index}}">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{i.title}}</h5>
@@ -292,7 +292,7 @@
   {% endfor %}
   {% for i in question_you_answer %}
   <div class="modal fade" tabindex="-1" role="dialog" id="question_you_answer{{loop.index}}">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{i.title}}</h5>
@@ -310,7 +310,7 @@
   {% else %}
   {% for i in your_question %}
   <div class="modal fade" tabindex="-1" role="dialog" id="your_question{{loop.index}}">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{i.title}}</h5>
@@ -329,7 +329,7 @@
 
   {% if session['level'] == 3 %}
   <div class="modal fade" tabindex="-1" role="dialog" id="addquestion">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Ask Something to Our Counselor</h5>

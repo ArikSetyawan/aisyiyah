@@ -94,6 +94,12 @@ def upload_image(file,id_user,level):
 			file.save(os.path.join(app.config['folderimage'],filename))
 			return filename
 	
+def cek_user(id_user):
+	cek = user.select().where(user.id == id_user)
+	if cek.exists():
+		return True
+	else:
+		return False
 
 @app.route('/')
 def index():
@@ -147,7 +153,7 @@ def registration():
 			# cek if email exists:
 			cek_email = user.select().where(user.email == email)
 			if cek_email.exists():
-				return redirect(url_for('registration'))
+				return redirect(url_for('users'))
 			else:
 				# insert_user
 				user.create(level=3,email=email,password=password)
@@ -169,7 +175,7 @@ def users():
 			get_teacher = teacher.select()
 			return render_template('users.html',student=get_student,teacher=get_teacher)
 		else:
-			return redirect(url_for(dashboard))
+			return redirect(url_for('dashboard'))
 	else:
 		return redirect(url_for('login'))
 
@@ -184,7 +190,7 @@ def addteacher():
 			# cek if email exists:
 			cek_email = user.select().where(user.email == email)
 			if cek_email.exists():
-				return redirect(url_for('registration'))
+				return redirect(url_for('users'))
 			else:
 				# insert_user
 				user.create(level=2,email=email,password=password)
@@ -455,6 +461,8 @@ def conselings():
 def create_conseling():
 	if 'login' in session:
 		if session['level'] == 3:
+			if cek_user(session['id_user']) == False:
+				return redirect(url_for('dashboard'))
 			waktu = time.time()
 			waktu_print = datetime.datetime.fromtimestamp(waktu).strftime('%Y-%m-%d %H:%M:%S')
 			title = request.form['title']
@@ -582,6 +590,18 @@ def delete_conseling(id_conseling):
 				return redirect(url_for('conselings'))
 			else:
 				return redirect(url_for('conselings'))
+		else:
+			return redirect(url_for('dashboard'))
+	else:
+		return redirect(url_for('login'))
+
+@app.route('/delete-all-conseling/')
+def delete_all_conseling():
+	if 'login' in session:
+		if session['level'] == 1:
+			del_conseling = conseling.delete()
+			del_conseling.execute()
+			return redirect(url_for('conselings'))
 		else:
 			return redirect(url_for('dashboard'))
 	else:
