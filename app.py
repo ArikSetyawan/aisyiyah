@@ -131,10 +131,13 @@ def login():
 				if cek_user.level == 2:
 					get_teacher = teacher.get(teacher.id_user == cek_user.id)
 					session['photo'] = get_teacher.photo
+					return redirect(url_for('dashboard'))
 				elif cek_user.level == 3:
 					get_student = student.get(student.id_user == cek_user.id)
 					session['photo'] = get_student.photo
-				return redirect(url_for('dashboard'))
+					return redirect(url_for('dashboard'))
+				else:
+					return redirect(url_for('dashboard'))
 			else:
 				return redirect(url_for('login'))
 
